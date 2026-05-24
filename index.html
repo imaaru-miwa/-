@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40代からの働き方チェックリスト</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  background: #F7F6F3;
+  color: #1a1a1a;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+.container { max-width: 640px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 2.5rem; }
+.header-tag { display: inline-block; font-size: 11px; font-weight: 600; color: #7F77DD; background: #EEEDFE; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+.header h1 { font-size: 22px; font-weight: 700; color: #1a1a1a; line-height: 1.4; margin-bottom: 0.5rem; }
+.header p { font-size: 13px; color: #666; line-height: 1.7; }
+.card { background: white; border-radius: 16px; padding: 1.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.progress-bar { height: 3px; background: #E8E8E8; border-radius: 2px; margin-bottom: 2rem; }
+.progress-fill { height: 100%; background: #7F77DD; border-radius: 2px; transition: width 0.4s ease; }
+.section-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+.question-title { font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 0.4rem; line-height: 1.5; }
+.note-gray { font-size: 12px; color: #999; margin-bottom: 1.25rem; }
+.note-accent { font-size: 12px; color: #D85A30; font-weight: 600; margin-bottom: 1.25rem; }
+.options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.75rem; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border: 1.5px solid #E8E8E8; border-radius: 12px; cursor: pointer; background: white; transition: all 0.15s; }
+.opt:hover { border-color: #C4C1F5; background: #FAFAFE; }
+.opt.selected { border-color: #7F77DD; background: #EEEDFE; }
+.opt-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #D0D0D0; margin-top: 1px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.opt.selected .opt-dot { background: #7F77DD; border-color: #7F77DD; }
+.opt.selected .opt-dot::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: white; }
+.opt-check { width: 20px; height: 20px; border-radius: 5px; border: 2px solid #D0D0D0; margin-top: 1px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.opt.selected .opt-check { background: #7F77DD; border-color: #7F77DD; }
+.opt.selected .opt-check::after { content: '✓'; font-size: 12px; color: white; font-weight: 700; }
+.opt-text { font-size: 14px; color: #1a1a1a; line-height: 1.5; font-weight: 500; }
+.opt-sub { font-size: 12px; color: #888; margin-top: 3px; }
+.priority-badge { font-size: 10px; padding: 1px 7px; border-radius: 10px; background: #7F77DD; color: white; margin-left: 8px; vertical-align: middle; font-weight: 600; }
+.nav { display: flex; justify-content: space-between; align-items: center; }
+.btn { padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1.5px solid #D0D0D0; background: white; color: #555; transition: all 0.15s; }
+.btn:hover { background: #F5F5F5; }
+.btn-primary { background: #7F77DD; color: white; border-color: #7F77DD; }
+.btn-primary:hover { background: #534AB7; border-color: #534AB7; }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.step-count { font-size: 13px; color: #999; }
+.result-header { border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+.result-type-tag { display: inline-block; font-size: 11px; padding: 3px 12px; border-radius: 20px; margin-bottom: 0.7rem; font-weight: 700; border: 1.5px solid; }
+.result-title { font-size: 21px; font-weight: 700; margin-bottom: 0.6rem; line-height: 1.3; }
+.result-desc { font-size: 13px; line-height: 1.8; }
+.result-theory { font-size: 11px; margin-top: 0.75rem; opacity: 0.6; }
+.block-title { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin: 1.5rem 0 0.75rem; }
+.perma-list { display: flex; flex-direction: column; gap: 8px; }
+.perma-item { display: flex; gap: 10px; padding: 12px 14px; border-radius: 10px; border: 1.5px solid #E8E8E8; background: #FAFAFA; }
+.perma-item.highlight { border-color: #7F77DD; background: #EEEDFE; }
+.perma-item.highlight .perma-text { color: #3C3489; }
+.perma-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; white-space: nowrap; margin-top: 2px; flex-shrink: 0; line-height: 1.6; }
+.perma-text { font-size: 13px; color: #1a1a1a; line-height: 1.5; font-weight: 500; }
+.perma-sub { font-size: 11px; color: #888; margin-top: 3px; }
+.value-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.5rem; }
+.value-tag { font-size: 12px; padding: 4px 12px; border-radius: 20px; background: #E1F5EE; color: #0F6E56; border: 1px solid #0F6E56; font-weight: 500; }
+.note-cta { border: 1.5px solid #E8E8E8; border-radius: 12px; padding: 1.25rem; margin-top: 1.25rem; background: #FAFAFA; }
+.note-cta-title { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 0.4rem; }
+.note-cta-desc { font-size: 12px; color: #666; line-height: 1.7; }
+.footer-note { text-align: center; font-size: 11px; color: #bbb; margin-top: 2rem; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-tag">40代女性のための無料診断</div>
+    <h1>更年期からはじめる<br>働き方チェックリスト</h1>
+    <p>身体・経済・価値観・将来設計の4軸から<br>あなたに合った働き方のヒントをお伝えします</p>
+  </div>
+  <div class="card" id="app"></div>
+  <div class="footer-note">
+    このチェックリストはエリクソン・セリグマン・スーパーの心理学理論をベースに<br>
+    理学療法士・認定心理士・産業カウンセラー（勉強中）がAIツールを活用して設計・制作しました
+  </div>
+</div>
+
+<script>
+const Qs = [
+  { id:'body', axis:'① 身体面', q:'今の仕事の体力的な負荷について、正直なところは？', note:'1つ選んでください', noteType:'gray', multi:false, opts:[
+    {label:'まだ問題ない', sub:'疲れても翌日には回復できる', val:4},
+    {label:'ちょっとしんどくなってきた', sub:'以前より疲れやすい・回復に時間がかかる', val:2},
+    {label:'正直、限界に近い', sub:'身体のサインが出始めている', val:0},
+    {label:'仕事内容を変えれば続けられる', sub:'体力より環境や役割の問題', val:3},
+  ]},
+  { id:'mental', axis:'① 精神面', q:'今の仕事・職場での気持ちは？', note:'1つ選んでください', noteType:'gray', multi:false, opts:[
+    {label:'仕事自体は好き、やりがいがある', sub:'続けたい気持ちが強い', val:'like'},
+    {label:'職場の人間関係がしんどい', sub:'仕事より環境が問題', val:'relation'},
+    {label:'仕事も職場もしんどい', sub:'どちらも限界に近い', val:'both'},
+    {label:'なんとなく続けているが意欲が薄れた', sub:'惰性感がある', val:'flat'},
+  ]},
+  { id:'economy', axis:'② 経済面', q:'収入についての考え方は？', note:'1つ選んでください', noteType:'gray', multi:false, opts:[
+    {label:'ある程度減っても大丈夫', sub:'他の収入源やパートナーの収入がある', val:4},
+    {label:'少し減るくらいは許容できる', sub:'生活水準を少し落とせる', val:3},
+    {label:'今の収入は絶対に必要', sub:'経済的な余裕がない', val:1},
+    {label:'むしろ収入を増やしたい', sub:'副収入となるものを探したい（今の仕事を続けながらでも）', val:3},
+  ]},
+  { id:'identity', axis:'③ アイデンティティ', q:'仕事と自分の関係について、一番近いのは？', note:'1つ選んでください', noteType:'gray', multi:false, opts:[
+    {label:'仕事は自分の一部', sub:'働いている自分が好き・社会とのつながりを感じる', val:4},
+    {label:'仕事はあくまで手段', sub:'生活のため・目的は別にある', val:2},
+    {label:'今の仕事への情熱が薄れてきた', sub:'やりがいより義務感で続けている', val:1},
+    {label:'昔やりたかったことが頭をよぎる', sub:'別の道への興味が出てきた', val:0},
+  ]},
+  { id:'value', axis:'④ 価値観', q:'働くことの目的として、あてはまるものを選んでください', note:'複数選択OK（最大3つ）。選んだ順番が優先順位になります', noteType:'accent', multi:true, maxSelect:3, opts:[
+    {label:'人の役に立つため', sub:'誰かに貢献できることが原動力', val:'help'},
+    {label:'経済的安定のため', sub:'家族・生活を守る。これは誰にとっても必須', val:'money'},
+    {label:'自己実現・成長のため', sub:'達成感・スキルアップ・自分を証明する', val:'grow'},
+    {label:'社会とつながるため', sub:'孤立したくない・役割を持っていたい', val:'connect'},
+    {label:'やりたいことを実現するため', sub:'ライフワークや夢に近づきたい', val:'dream'},
+  ]},
+  { id:'future_age', axis:'⑤ 将来設計（年齢）', q:'何歳くらいまで「働いていたい」と思う？', note:'1つ選んでください', noteType:'gray', multi:false, opts:[
+    {label:'50代まで', sub:'早めに区切りをつけたい', val:1},
+    {label:'60歳前後まで', sub:'定年・節目のタイミングで考えたい', val:2},
+    {label:'65歳くらいまで', sub:'できれば少し長く、でも無理はしない', val:3},
+    {label:'体が動く限りは', sub:'年齢より体力・気力次第', val:4},
+  ]},
+  { id:'future_style', axis:'⑤ 将来設計（働き方）', q:'これからの働き方として、理想に近いのは？', note:'1つ選んでください', noteType:'gray', multi:false, opts:[
+    {label:'今の職場・職種でそのまま続けたい', sub:'環境を変えずキャリアを維持', val:'stay'},
+    {label:'同じ職種で職場を変えたい', sub:'スキルは活かしつつ環境をリセット', val:'move'},
+    {label:'今の職種で非常勤・時短にしたい', sub:'ペースを落として長く続けたい', val:'shift_same'},
+    {label:'別の職種で非常勤・パートに移りたい', sub:'新しいことに挑戦しながら無理しない', val:'shift_new'},
+    {label:'まずカラダを休めることが最優先', sub:'今は仕事より回復が先', val:'rest'},
+  ]},
+  { id:'transform', axis:'⑥ 転身意向', q:'「別の道」や「昔やりたかったこと」について今どう感じる？', note:'1つ選んでください', noteType:'gray', multi:false, opts:[
+    {label:'具体的に考えたことがある', sub:'頭の中でシミュレーションしている', val:4},
+    {label:'気になってはいる', sub:'でもまだ踏み出せていない', val:3},
+    {label:'今の仕事の延長線が現実的', sub:'転身よりも今を磨きたい', val:1},
+    {label:'まず働き方を整えることが先', sub:'転身より「今の負荷を減らす」が優先', val:2},
+  ]}
+];
+
+const TYPES = {
+  t1:{ label:'①現状維持・医療対処型', color:'#185FA5', bg:'#E6F1FB', desc:'身体のしんどさはあるけれど、仕事自体は好きで続けたい気持ちが強いタイプ。更年期症状を「治療・対処」することで、今のキャリアをそのまま維持できる可能性が十分あります。まず身体に向き合うことが最初の一歩。', theory:'エリクソン「生殖性」×ホルモン変動の生理的根拠', perma:[
+    {key:'P', label:'ポジティブ感情', text:'更年期症状は「弱さ」じゃない。生理的な変化と知るだけで気持ちが楽になる', hl:false},
+    {key:'E', label:'エンゲージメント', text:'更年期外来・婦人科を受診してみる', sub:'エクオール・HRTなど選択肢を専門家と話してみて', hl:true},
+    {key:'R', label:'関係性', text:'職場の信頼できる人に「最近しんどい」と一言だけ伝えてみる', hl:false},
+    {key:'M', label:'意味', text:'「なぜ今の仕事を続けたいか」を言葉にしてみる', sub:'それがあなたのエネルギー源', hl:false},
+    {key:'A', label:'達成', text:'症状が落ち着いた日に「今日できたこと」を1つ書き留める', hl:false},
+  ]},
+  t2:{ label:'②継続・職場交渉型', color:'#1D7A5F', bg:'#E1F5EE', desc:'しんどいけれど経済的・キャリア的な理由で仕事を続ける必要があるタイプ。「辞める」以外の選択肢——有給・時短・業務調整——を自分から動いて取りにいくことが大切。権利を使うことは「甘え」じゃない。', theory:'自己決定理論（デシ＆ライアン）の「自律性」', perma:[
+    {key:'P', label:'ポジティブ感情', text:'「我慢している自分」から「交渉している自分」へ。主体性を取り戻すことが第一歩', hl:false},
+    {key:'E', label:'エンゲージメント', text:'上司・人事に時短・有給取得・業務調整を相談してみる', sub:'「お願い」じゃなく「提案」として持っていく', hl:true},
+    {key:'R', label:'関係性', text:'産業カウンセラー・EAPに相談してみる', sub:'職場のしんどさは一人で抱えなくていい', hl:true},
+    {key:'M', label:'意味', text:'今の仕事で「これだけは自分がやらなくていい」ことをリストアップする', hl:false},
+    {key:'A', label:'達成', text:'有給を1日使って「何もしない日」を作る。それも立派な達成', hl:false},
+  ]},
+  t3:{ label:'③同職種・職場変更型', color:'#7F77DD', bg:'#EEEDFE', desc:'スキルや仕事内容への誇りはあるが、今の職場環境がしんどいタイプ。「仕事は好き、でも職場が合わない」なら、転職という選択は正しい。ただしキャリアの継続性という点では、慎重に動く価値があります。', theory:'スーパーのキャリア発達理論「維持期の再構築」', perma:[
+    {key:'P', label:'ポジティブ感情', text:'「逃げる」じゃなく「選ぶ」。環境を変えることは勇気ある決断', hl:false},
+    {key:'E', label:'エンゲージメント', text:'転職サイト・ハローワークで今の職種の求人を見てみる', sub:'まず「どんな選択肢があるか」を知るだけでいい', hl:true},
+    {key:'R', label:'関係性', text:'信頼できる同業者・元同僚に相談してみる', sub:'業界の内情を知っている人の話は参考になる', hl:false},
+    {key:'M', label:'意味', text:'今の職場を離れても「続けたい理由」が何かを書き出してみる', hl:false},
+    {key:'A', label:'達成', text:'履歴書・職務経歴書を最新版に更新する。動く準備をするだけでも気持ちが変わる', hl:false},
+  ]},
+  t4:{ label:'④同職種・非常勤シフト型', color:'#1D9E75', bg:'#E1F5EE', desc:'今の職種・スキルを活かしながらペースを落としたいタイプ。非常勤・パートへの移行は「キャリアを手放す」ことではなく「長く続けるための賢い選択」。エリクソンが言う「貢献しながら生きる」がここにある。', theory:'エリクソン「生殖性」×マズロー「所属と貢献」', perma:[
+    {key:'P', label:'ポジティブ感情', text:'フルタイムじゃなくても「貢献している自分」は変わらない', hl:false},
+    {key:'E', label:'エンゲージメント', text:'今の職場に非常勤・時短移行の可能性を打診してみる', sub:'または非常勤求人を職種・エリアで調べてみる', hl:true},
+    {key:'R', label:'関係性', text:'同職種で非常勤として働いている先輩・知人に話を聞く', sub:'「どんな感じ？」から始めるだけでいい', hl:false},
+    {key:'M', label:'意味', text:'「週何日・何時間なら無理なく働けるか」を具体的に書き出す', hl:false},
+    {key:'A', label:'達成', text:'非常勤で働き始めた最初の1ヶ月、ペースが落ち着いたら「よくやった」と自分を認める', hl:false},
+  ]},
+  t5:{ label:'⑤他職種・転身型', color:'#C2590A', bg:'#FAEEDA', desc:'昔やりたかったこと・新しい何かへの興味が本物になってきたタイプ。一番勇気がいるが、一番ワクワクもある選択。ゼロイチで考えず、今の仕事と並走しながら「小さく試す」ことから始めるのが現実的で失敗しにくい。', theory:'エリクソン「生殖性」＋マズロー「自己実現欲求」', perma:[
+    {key:'P', label:'ポジティブ感情', text:'「遅すぎる」は思い込み。40代からの転身は珍しくない時代になっている', hl:false},
+    {key:'E', label:'エンゲージメント', text:'興味のある仕事・資格を「副業・ボランティア」で小さく試してみる', sub:'いきなり辞めなくていい。並走しながら確かめる', hl:true},
+    {key:'R', label:'関係性', text:'その分野にいる人と話してみる', sub:'SNS・勉強会・コミュニティで接点を作るだけでいい', hl:false},
+    {key:'M', label:'意味', text:'「なぜその道に興味があるか」を言語化する', sub:'それが本物かどうかの確認になる', hl:false},
+    {key:'A', label:'達成', text:'関連する本を1冊読む・セミナーに1回参加する。小さな一歩が本気度を育てる', hl:true},
+  ]},
+  t6:{ label:'⑥休養・回復優先型', color:'#8B5CF6', bg:'#F3F0FF', desc:'今は仕事の前に、まずカラダと心を回復させることが最優先のタイプ。休むことは「諦め」でも「サボり」でもない。セリグマンが言うように、ポジティブ感情の回復なしに次のステップはない。まず満タンにすることが先。', theory:'セリグマンPERMA「ポジティブ感情の回復」が基盤', perma:[
+    {key:'P', label:'ポジティブ感情', text:'「休んでいい」という許可を自分に出す。それだけでいい', sub:'今日できた小さなことを1つだけ認める', hl:true},
+    {key:'E', label:'エンゲージメント', text:'更年期外来・婦人科・心療内科のどれかを受診する', sub:'身体と心の不調は連動している。専門家に診てもらって', hl:true},
+    {key:'R', label:'関係性', text:'信頼できる人に「しんどい」と伝える', sub:'解決しなくていい。聞いてもらうだけで違う', hl:false},
+    {key:'M', label:'意味', text:'今は「次をどうするか」を考えなくていい。回復が仕事', hl:false},
+    {key:'A', label:'達成', text:'今日、1時間だけ「何もしない時間」を作る。それが今日の達成', hl:false},
+  ]}
+};
+
+function diagnose(ans) {
+  const body = Qs[0].opts[ans.body]?.val ?? 4;
+  const mental = Qs[1].opts[ans.mental]?.val ?? 'like';
+  const economy = Qs[2].opts[ans.economy]?.val ?? 2;
+  const identity = Qs[3].opts[ans.identity]?.val ?? 2;
+  const futureStyle = Qs[6].opts[ans.future_style]?.val ?? 'stay';
+  const transform = Qs[7].opts[ans.transform]?.val ?? 1;
+  if (body === 0 || mental === 'both' || futureStyle === 'rest') return 't6';
+  if (transform >= 3 && economy >= 3 && identity === 0) return 't5';
+  if (futureStyle === 'shift_new') return 't5';
+  if (futureStyle === 'shift_same' || (body <= 2 && mental === 'like')) return 't4';
+  if (futureStyle === 'move' || mental === 'relation') return 't3';
+  if (mental === 'flat' && body <= 2) return 't2';
+  if (body <= 2 && mental === 'like') return 't2';
+  return 't1';
+}
+
+const permaColors = {P:'#E85D75', E:'#F5A623', R:'#27AE60', M:'#2980B9', A:'#8E44AD'};
+let cur = 0, ans = {};
+
+function render() {
+  const q = Qs[cur];
+  const total = Qs.length;
+  const pct = Math.round((cur / total) * 100);
+  const sel = ans[q.id];
+  const selArr = q.multi ? (Array.isArray(sel) ? sel : []) : [];
+  const canNext = q.multi ? selArr.length > 0 : sel !== undefined;
+
+  const optsHtml = q.opts.map((o, i) => {
+    let isSelected, badge = '';
+    if (q.multi) {
+      const idx = selArr.indexOf(i);
+      isSelected = idx !== -1;
+      if (isSelected) badge = `<span class="priority-badge">${idx+1}位</span>`;
+    } else { isSelected = sel === i; }
+    const marker = q.multi ? `<div class="opt-check"></div>` : `<div class="opt-dot"></div>`;
+    return `<div class="opt${isSelected?' selected':''}" onclick="pick(${i})">
+      ${marker}<div><div class="opt-text">${o.label}${badge}</div><div class="opt-sub">${o.sub}</div></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="section-label">${q.axis}</div>
+    <div class="question-title">${q.q}</div>
+    <div class="${q.noteType==='accent'?'note-accent':'note-gray'}">${q.note}</div>
+    <div class="options">${optsHtml}</div>
+    <div class="nav">
+      <button class="btn" onclick="go(-1)" ${cur===0?'disabled':''}>← 戻る</button>
+      <span class="step-count">${cur+1} / ${total}</span>
+      <button class="btn btn-primary" onclick="go(1)" ${!canNext?'disabled':''}>${cur===total-1?'結果を見る →':'次へ →'}</button>
+    </div>`;
+}
+
+function pick(i) {
+  const q = Qs[cur];
+  if (q.multi) {
+    let arr = Array.isArray(ans[q.id]) ? [...ans[q.id]] : [];
+    const idx = arr.indexOf(i);
+    if (idx !== -1) arr.splice(idx, 1);
+    else if (arr.length < (q.maxSelect||3)) arr.push(i);
+    ans[q.id] = arr;
+  } else { ans[q.id] = i; }
+  render();
+}
+
+function go(dir) {
+  if (dir === 1) {
+    const q = Qs[cur];
+    const sel = ans[q.id];
+    const ok = q.multi ? (Array.isArray(sel) && sel.length > 0) : sel !== undefined;
+    if (!ok) return;
+    if (cur === Qs.length - 1) { showResult(); return; }
+  }
+  cur = Math.max(0, cur + dir);
+  render();
+}
+
+function showResult() {
+  const typeKey = diagnose(ans);
+  const t = TYPES[typeKey];
+  const valueQ = Qs.find(x => x.id === 'value');
+  const valueArr = Array.isArray(ans['value']) ? ans['value'] : [];
+  const valueTags = valueArr.map(i => valueQ.opts[i]?.label).filter(Boolean);
+
+  const permaHtml = t.perma.map(p => `
+    <div class="perma-item${p.hl?' highlight':''}">
+      <span class="perma-badge" style="background:${permaColors[p.key]}20;color:${permaColors[p.key]};border:1px solid ${permaColors[p.key]}50">${p.key}:${p.label}</span>
+      <div><div class="perma-text">${p.text}</div>${p.sub?`<div class="perma-sub">${p.sub}</div>`:''}</div>
+    </div>`).join('');
+
+  const valueHtml = valueTags.length ? `
+    <div class="block-title">あなたが働く目的（優先順）</div>
+    <div class="value-tags">${valueTags.map((t,i)=>`<span class="value-tag">${i+1}位: ${t}</span>`).join('')}</div>` : '';
+
+  document.getElementById('app').innerHTML = `
+    <div class="result-header" style="background:${t.bg}">
+      <div class="result-type-tag" style="color:${t.color};border-color:${t.color}60;background:white">${t.label}</div>
+      <div class="result-title" style="color:${t.color}">${t.label}</div>
+      <div class="result-desc" style="color:${t.color}">${t.desc}</div>
+      <div class="result-theory" style="color:${t.color}">理論的背景：${t.theory}</div>
+    </div>
+    ${valueHtml}
+    <div class="block-title">今すぐできる次の一歩 — PERMAモデルより</div>
+    <div class="perma-list">${permaHtml}</div>
+    <div class="note-cta">
+      <div class="note-cta-title">📝 この診断の理論的背景をもっと知りたい方へ</div>
+      <div class="note-cta-desc">エリクソン・セリグマン・スーパーの理論と、40代女性の働き方の関係をnoteで詳しく解説しています。個別相談も受け付け中です。</div>
+    </div>
+    <button class="btn" onclick="restart()" style="margin-top:1.25rem;width:100%">← もう一度やり直す</button>`;
+}
+
+function restart() { cur = 0; ans = {}; render(); }
+render();
+</script>
+</body>
+</html>
