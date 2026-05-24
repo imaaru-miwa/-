@@ -63,6 +63,10 @@ body {
 .note-cta { border: 1.5px solid #E8E8E8; border-radius: 12px; padding: 1.25rem; margin-top: 1.25rem; background: #FAFAFA; }
 .note-cta-title { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 0.4rem; }
 .note-cta-desc { font-size: 12px; color: #666; line-height: 1.7; }
+.risk-box { border: 1.5px solid #F5A623; border-radius: 12px; padding: 1.25rem; margin-top: 1.25rem; background: #FFFBF0; }
+.risk-title { font-size: 13px; font-weight: 700; color: #B07A00; margin-bottom: 0.75rem; }
+.risk-item { font-size: 12px; color: #8A6200; line-height: 1.7; padding: 4px 0 4px 1.5rem; position: relative; }
+.risk-item::before { content: '⚠️'; position: absolute; left: 0; font-size: 10px; top: 5px; }
 .footer-note { text-align: center; font-size: 11px; color: #bbb; margin-top: 2rem; line-height: 1.8; }
 </style>
 </head>
@@ -124,6 +128,7 @@ const Qs = [
     {label:'同じ職種で職場を変えたい', sub:'スキルは活かしつつ環境をリセット', val:'move'},
     {label:'今の職種で非常勤・時短にしたい', sub:'ペースを落として長く続けたい', val:'shift_same'},
     {label:'別の職種で非常勤・パートに移りたい', sub:'新しいことに挑戦しながら無理しない', val:'shift_new'},
+    {label:'ゆっくり自分のペースで暮らしたい', sub:'仕事よりプライベートを優先したい気持ちがある', val:'retire'},
     {label:'まずカラダを休めることが最優先', sub:'今は仕事より回復が先', val:'rest'},
   ]},
   { id:'transform', axis:'⑥ 転身意向', q:'「別の道」や「昔やりたかったこと」について今どう感じる？', note:'1つ選んでください', noteType:'gray', multi:false, opts:[
@@ -176,8 +181,23 @@ const TYPES = {
     {key:'R', label:'関係性', text:'信頼できる人に「しんどい」と伝える', sub:'解決しなくていい。聞いてもらうだけで違う', hl:false},
     {key:'M', label:'意味', text:'今は「次をどうするか」を考えなくていい。回復が仕事', hl:false},
     {key:'A', label:'達成', text:'今日、1時間だけ「何もしない時間」を作る。それが今日の達成', hl:false},
-  ]}
+  ], risk:false},
+  t7:{ label:'リタイア検討型', color:'#B07A00', bg:'#FFFBF0', desc:'「ゆっくり自分のペースで暮らしたい」という気持ち、とても自然です。でも完全リタイアを選ぶ前に、知っておいてほしいことがあります。仕事をやめることは「解放」だけではなく、思いがけないリスクも伴います。焦らず、でも少しだけ立ち止まって考えてみてください。', theory:'エリクソン「停滞」のリスク×セリグマン「関係性・意味」の喪失', perma:[
+    {key:'P', label:'ポジティブ感情', text:'「休みたい」という気持ちは本物。まずその気持ちを大切に', hl:false},
+    {key:'E', label:'エンゲージメント', text:'完全リタイアの前に「週1〜2日だけ働く」形を試してみる', sub:'いきなりゼロにしなくていい。段階的に減らす選択肢がある', hl:true},
+    {key:'R', label:'関係性', text:'仕事をやめた後の「つながり」を今から意識して作っておく', sub:'地域活動・ボランティア・趣味のコミュニティなど', hl:true},
+    {key:'M', label:'意味', text:'「仕事をやめた後、何で自分は社会とつながるか」を言葉にしてみる', sub:'役割や意味を失うと、想定外のしんどさが来ることがある', hl:false},
+    {key:'A', label:'達成', text:'個別相談で「リタイア後の生活設計」を一緒に考えてみる', hl:false},
+  ], risk:true},
 };
+
+const RISKS = [
+  '社会的孤立のリスク：仕事を通じた人間関係が突然なくなることで、孤独感が増すことがあります',
+  '認知機能への影響：社会参加や知的刺激が減ることで、認知機能の低下が早まるという研究があります',
+  '喪失感・虚無感：「役割がなくなった」という感覚が、予想以上のしんどさとして現れることがあります',
+  '経済的リスク：長寿化が進む現代、思っていたより長い「仕事のない期間」が続く可能性があります',
+  '「仕事以外の社会参加」という第三の道もあります：ボランティア・地域活動・趣味のコミュニティなど',
+];
 
 function diagnose(ans) {
   const body = Qs[0].opts[ans.body]?.val ?? 4;
@@ -186,6 +206,7 @@ function diagnose(ans) {
   const identity = Qs[3].opts[ans.identity]?.val ?? 2;
   const futureStyle = Qs[6].opts[ans.future_style]?.val ?? 'stay';
   const transform = Qs[7].opts[ans.transform]?.val ?? 1;
+  if (futureStyle === 'retire') return 't7';
   if (body === 0 || mental === 'both' || futureStyle === 'rest') return 't6';
   if (transform >= 3 && economy >= 3 && identity === 0) return 't5';
   if (futureStyle === 'shift_new') return 't5';
@@ -274,6 +295,11 @@ function showResult() {
     <div class="block-title">あなたが働く目的（優先順）</div>
     <div class="value-tags">${valueTags.map((t,i)=>`<span class="value-tag">${i+1}位: ${t}</span>`).join('')}</div>` : '';
 
+  const riskHtml = t.risk ? `
+    <div class="risk-box">
+      <div class="risk-title">⚠️ 完全リタイアの前に知っておいてほしいこと</div>
+      ${RISKS.map(r=>`<div class="risk-item">${r}</div>`).join('')}
+    </div>` : '';
   document.getElementById('app').innerHTML = `
     <div class="result-header" style="background:${t.bg}">
       <div class="result-type-tag" style="color:${t.color};border-color:${t.color}60;background:white">${t.label}</div>
@@ -284,6 +310,7 @@ function showResult() {
     ${valueHtml}
     <div class="block-title">今すぐできる次の一歩 — PERMAモデルより</div>
     <div class="perma-list">${permaHtml}</div>
+    ${riskHtml}
     <div class="note-cta">
       <div class="note-cta-title">📝 この診断の理論的背景をもっと知りたい方へ</div>
       <div class="note-cta-desc">エリクソン・セリグマン・スーパーの理論と、40代女性の働き方の関係をnoteで詳しく解説しています。個別相談も受け付け中です。</div>
