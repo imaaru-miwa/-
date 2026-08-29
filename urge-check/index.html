@@ -55,6 +55,10 @@
     .axis-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
     .axis-name{font-weight:800}
     .axis-label{font-size:13px;font-weight:800;padding:3px 9px;border-radius:999px;background:#fff9}
+    .starline{font-size:23px;letter-spacing:.12em;margin-top:8px;font-weight:800}
+    .axis-a .starline{color:var(--a)}
+    .axis-b .starline{color:var(--b)}
+    .axis-c .starline{color:var(--c)}
     .meter{display:flex;gap:6px;margin-top:10px}
     .dot{height:8px;flex:1;border-radius:999px;background:#ffffffaa;border:1px solid #ffffffcc}
     .axis-a .dot.on{background:var(--a);border-color:var(--a)}
@@ -90,7 +94,7 @@
     <div class="brand">imaaru ｜ 骨盤底ケア</div>
     <div class="badge">無料・約2分</div>
     <h1>急な尿意、<br>あなたはどの傾向？</h1>
-    <p class="lead">「急にトイレに行きたくなる」「念のため先に行ってしまう」。10問で、今の状態を3つの視点から整理してみましょう。</p>
+    <p class="lead">「急にトイレに行きたくなる」「念のため先に行ってしまう」。10問で、今の傾向を3つの視点から整理してみましょう。</p>
   </header>
 
   <section id="intro" class="card">
@@ -132,7 +136,7 @@ const questions = [
   {
     text:"家に着いた時、玄関の鍵を開ける時、トイレが見えた時など、決まった場面で急に尿意が強くなることがありますか？",
     options:[
-      ["ほとんどない",{A:0,B:0}],["ときどきある",{A:2,B:1}],["よくある",{A:4,B:2}]
+      ["ほとんどない",{A:0,B:0}],["ときどきある",{A:1,B:2}],["よくある",{A:2,B:4}]
     ]
   },
   {
@@ -182,8 +186,8 @@ const questions = [
   {
     text:"日中、起きている間にトイレへ行く回数は、だいたい何回ですか？",
     options:[
-      ["1〜4回",{A:0,B:0}],["5〜7回",{A:0,B:0}],["8〜10回",{A:1,B:1}],
-      ["11回以上",{A:1,B:2}],["分からない",{A:0,B:0}]
+      ["1〜4回",{A:0,B:0}],["5〜7回",{A:0,B:0}],["8〜10回",{A:1,B:2}],
+      ["11回以上",{A:1,B:3}],["分からない",{A:0,B:0}]
     ]
   }
 ];
@@ -197,7 +201,7 @@ const RED_FLAGS = [
   "どれも当てはまらない"
 ];
 
-const MAX = {A:9, B:18, C:8};
+const MAX = {A:7, B:21, C:8};
 const AXIS = {
   A:{icon:"🕊️",name:"排尿習慣・学習"},
   B:{icon:"🌊",name:"急な尿意"},
@@ -266,15 +270,21 @@ function handleRed(el){
 }
 
 function level(r){
-  if(r<0.25)return {label:"大きく気になる傾向なし",dots:1,rank:0};
-  if(r<0.55)return {label:"少し気になる",dots:2,rank:1};
-  return {label:"気になる",dots:3,rank:2};
+  if(r<0.25)return {label:"大きく気になる傾向なし",stars:0,rank:0};
+  if(r<0.50)return {label:"少し気になる",stars:1,rank:1};
+  if(r<0.70)return {label:"やや気になる",stars:2,rank:2};
+  if(r<0.85)return {label:"気になる",stars:3,rank:3};
+  return {label:"強め",stars:4,rank:4};
 }
 function axisCard(k,ratio){
   const l=level(ratio), a=AXIS[k];
+  const stars="★".repeat(l.stars)+"☆".repeat(4-l.stars);
   return `<div class="axis axis-${k.toLowerCase()}">
-    <div class="axis-top"><div class="axis-name">${a.icon} ${a.name}</div><div class="axis-label">${l.label}</div></div>
-    <div class="meter">${[1,2,3].map(n=>`<span class="dot ${n<=l.dots?"on":""}"></span>`).join("")}</div>
+    <div class="axis-top">
+      <div class="axis-name">${a.icon} ${a.name}</div>
+      <div class="axis-label">${l.label}</div>
+    </div>
+    <div class="starline" aria-label="${l.stars} of 4">${stars}</div>
   </div>`;
 }
 function scoreAll(){
@@ -289,12 +299,15 @@ function determine(scores){
   const ratios={A:scores.A/MAX.A,B:scores.B/MAX.B,C:scores.C/MAX.C};
   const levels={A:level(ratios.A),B:level(ratios.B),C:level(ratios.C)};
   if(Object.values(ratios).every(r=>r<0.25)) return {ratios,levels,tied:[],primary:null};
-  const maxRank=Math.max(...Object.values(levels).map(x=>x.rank));
-  const band=Object.keys(levels).filter(k=>levels[k].rank===maxRank);
-  const maxRatio=Math.max(...band.map(k=>ratios[k]));
-  let tied=band.filter(k=>maxRatio-ratios[k]<=0.10);
-  if(tied.length===0)tied=[band.sort((x,y)=>ratios[y]-ratios[x])[0]];
-  // Same-top priority: C first (prerequisite for urge strategy), then B, then A
+
+  const maxRatio=Math.max(...Object.values(ratios));
+  let tied=Object.keys(ratios).filter(k=>ratios[k]>=0.40 && (maxRatio-ratios[k])<=0.10);
+
+  if(tied.length===0){
+    tied=[Object.keys(ratios).sort((x,y)=>ratios[y]-ratios[x])[0]];
+  }
+
+  // 同率首位の優先：C（Bの尿意抑制を使う前提）→ B → A
   const primary=["C","B","A"].find(k=>tied.includes(k)) || tied[0];
   return {ratios,levels,tied,primary};
 }
@@ -331,19 +344,20 @@ function whyText(primary,tied){
     const joined=names.length===2?`${names[0]}と${names[1]}`:`${names.slice(0,-1).join("、")}、${names[names.length-1]}`;
     let why="";
     if(primary==="C"){
-      why="急な尿意への対策では骨盤底筋を短く収縮させる方法を使うことがあります。そのため、骨盤底筋の使い方も同じくらい気になる場合は、まず収縮する感覚を確認しておく方が取り組みやすいからです。";
+      why="急な尿意への対策では、骨盤底筋を短く収縮させる方法を使うことがあります。そのため、骨盤底筋の使い方も同じくらい気になる場合は、まず「自分で収縮する感覚が分かるか」を確認しておく方が、その後の対策に取り組みやすいからです。";
     }else if(primary==="B"){
       why="急な尿意への対処は、その場で使える具体的な方法です。まず「来たときにどうするか」を持っておくと、その後に排尿習慣も落ち着いて見直しやすくなるからです。";
     }else{
-      why="今回もっとも取り組みやすいのが、自分の排尿パターンに気づくことだからです。";
+      why="まず自分の排尿パターンに気づくことが、その後の行動を選び直す一歩になるからです。";
     }
     return {
       intro:`今回は${joined}が<strong>同じくらい気になる結果</strong>でした。どちらか1つだけが原因という意味ではなく、<strong>複数の要素が重なっている可能性</strong>があります。`,
       why
     };
   }
+
   const k=tied[0];
-  const intro=`今回は<strong>「${AXIS[k].name}」</strong>が、ほかの2つより気になる結果でした。`;
+  const intro=`3つの視点の中では、<strong>「${AXIS[k].name}」</strong>の傾向が最も高く出ています。`;
   const why = k==="A"
     ?"まず自分の排尿パターンに気づくことで、「尿意で行っているのか、習慣で行っているのか」を整理しやすくなるからです。"
     :k==="B"
@@ -351,11 +365,15 @@ function whyText(primary,tied){
     :"急な尿意への対策で骨盤底筋収縮を使うこともあるため、まず自分で収縮する感覚が分かるか確認しておくことが大切だからです。";
   return {intro,why};
 }
-function actionBlock(k,primary=false){
+function actionBlock(k,primary=false,levels=null){
   const a=ACTIONS[k];
+  let note="";
+  if(k==="B" && levels && levels.C.rank>=1){
+    note=`<p class="mini" style="margin-top:12px"><strong>※骨盤底筋を締める感覚が分からない場合は、無理に繰り返さず、下の「骨盤底筋の使い方」も確認してください。</strong></p>`;
+  }
   return `<div class="action action-${k.toLowerCase()}">
     <h3>${AXIS[k].icon} ${primary?"⭐ まずこれ｜":""}${a.title}</h3>
-    <p>${a.body}</p><p style="margin-bottom:0">${a.goal}</p>
+    <p>${a.body}</p><p style="margin-bottom:0">${a.goal}</p>${note}
   </div>`;
 }
 
@@ -406,12 +424,12 @@ function showResult(hasRed,d){
       <h2>⭐ まずは「${ACTIONS[d.primary].title}」から</h2>
       <div class="why"><strong>なぜ、ここから？</strong><br>${wt.why}</div>
     </div>
-    ${actionBlock(d.primary,true)}
-    ${others.length?`<div class="sub-actions"><h3>あわせて気になったところ</h3>${others.map(k=>actionBlock(k,false)).join("")}</div>`:""}
+    ${actionBlock(d.primary,true,d.levels)}
+    ${others.length?`<div class="sub-actions"><h3>あわせて気になったところ</h3>${others.map(k=>actionBlock(k,false,d.levels)).join("")}</div>`:""}
     <p class="mini">※ この結果は診断ではありません。骨盤底筋の実際の筋力や収縮のタイミングなどは、セルフチェックだけでは判断できません。</p>
     <div class="cta">
-      <strong>結果は分かった。次は「できる」に変える1週間。</strong>
-      <p>LINEでは、骨盤底筋の使い方やセルフケアを、無理なく続けられる形でお届けしています。</p>
+      <strong>まずは、上の「まずこれ」を試してみてください。</strong>
+      <p>もう少し骨盤底筋の使い方やセルフケアを確認したい方へ、LINEで1週間のセルフケアを無料でお届けしています。</p>
       <a class="btn btn-line" href="${LINE_URL}" target="_blank" rel="noopener">LINEで無料1週間を始める</a>
     </div>
     <button class="restart" onclick="restart()">もう一度チェックする</button>`;
