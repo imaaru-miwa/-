@@ -1,1 +1,438 @@
-<!-- temporary -->
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>急な尿意、あなたはどのタイプ？｜imaaru</title>
+  <meta name="description" content="急な尿意やトイレの近さを10問で整理する無料セルフチェック。診断ではなく、排尿習慣や骨盤底筋の使い方を振り返るためのチェックです。">
+  <style>
+    :root{
+      --bg:#fbfaf6;
+      --card:#ffffff;
+      --ink:#3d453f;
+      --muted:#6f776f;
+      --green:#6f8f7b;
+      --green-dark:#52705f;
+      --green-pale:#edf3ee;
+      --beige:#f4eee4;
+      --rose:#f4e7e4;
+      --line:#dde6df;
+      --warn:#8a5d4b;
+      --shadow:0 12px 34px rgba(69,84,73,.10);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#f8faf7 0%,var(--bg) 35%,#fff 100%);
+      color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","YuGothic",Meiryo,sans-serif;
+      line-height:1.8;
+    }
+    .wrap{max-width:760px;margin:auto;padding:24px 16px 64px}
+    header{text-align:center;padding:28px 8px 18px}
+    .brand{font-size:14px;letter-spacing:.16em;color:var(--green-dark);font-weight:700}
+    h1{font-size:clamp(28px,7vw,42px);line-height:1.35;margin:10px 0 12px}
+    .lead{color:var(--muted);font-size:15px;margin:0 auto;max-width:620px}
+    .badge{display:inline-block;background:var(--green-pale);color:var(--green-dark);padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700}
+    .card{background:var(--card);border:1px solid #eef1ee;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin:16px 0}
+    .note{background:var(--green-pale);border-radius:16px;padding:14px 16px;font-size:14px}
+    .medical{background:#fff7f3;border:1px solid #efd8ce;border-radius:16px;padding:14px 16px;color:#6e4c40;font-size:14px}
+    .progress-wrap{position:sticky;top:0;z-index:10;background:rgba(251,250,246,.92);backdrop-filter:blur(9px);padding:10px 0 8px}
+    .progress{height:8px;background:#e7ece8;border-radius:999px;overflow:hidden}
+    .progress > div{height:100%;background:var(--green);width:0;transition:.25s}
+    .qnum{font-size:12px;font-weight:800;color:var(--green-dark);letter-spacing:.08em}
+    .question{font-size:20px;font-weight:800;line-height:1.55;margin:8px 0 16px}
+    .options{display:grid;gap:10px}
+    label.option{
+      display:flex;gap:12px;align-items:flex-start;padding:14px 15px;border:1px solid var(--line);
+      border-radius:15px;cursor:pointer;background:#fff;transition:.18s
+    }
+    label.option:hover{border-color:#b8c9bd;background:#fbfdfb}
+    label.option:has(input:checked){border-color:var(--green);background:var(--green-pale)}
+    input[type=radio],input[type=checkbox]{margin-top:6px;accent-color:var(--green);transform:scale(1.15)}
+    .btn{
+      border:0;border-radius:999px;padding:15px 22px;font-size:16px;font-weight:800;cursor:pointer;
+      text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px
+    }
+    .btn-primary{background:var(--green-dark);color:white;box-shadow:0 7px 18px rgba(82,112,95,.22)}
+    .btn-secondary{background:var(--green-pale);color:var(--green-dark)}
+    .btn-line{background:#06C755;color:#fff;width:100%;font-size:17px}
+    .actions{display:flex;gap:10px;justify-content:space-between;margin-top:18px}
+    .hidden{display:none!important}
+    .result-title{font-size:27px;line-height:1.45;margin:8px 0}
+    .result-tag{font-weight:800;color:var(--green-dark)}
+    .result-box{background:var(--green-pale);border-radius:18px;padding:18px;margin:16px 0}
+    .result-box h3{margin-top:0}
+    .type-head{border-radius:20px;padding:18px 18px 16px;margin:8px 0 18px;border:1px solid transparent}
+    .type-head .eyebrow{font-size:13px;font-weight:800;letter-spacing:.08em;margin-bottom:3px}
+    .type-head .icon{font-size:30px;line-height:1;margin-bottom:8px}
+    .type-a{background:#f2f5e9;border-color:#dfe7ca}
+    .type-a .eyebrow{color:#68734d}
+    .type-b{background:#edf5f4;border-color:#d4e6e3}
+    .type-b .eyebrow{color:#4e7470}
+    .type-c{background:#f7f0e7;border-color:#eadbc7}
+    .type-c .eyebrow{color:#806849}
+    .type-d{background:#fff0ec;border-color:#efd2c8}
+    .type-d .eyebrow{color:#8a5d4b}
+    .action-box{border-radius:20px;padding:19px;margin:18px 0}
+    .action-box h3{margin:0 0 8px;font-size:20px}
+    .action-a{background:#f2f5e9;border-left:6px solid #879466}
+    .action-b{background:#edf5f4;border-left:6px solid #6d9691}
+    .action-c{background:#f7f0e7;border-left:6px solid #a48761}
+    .action-d{background:#fff0ec;border-left:6px solid #b57965}
+    ul{padding-left:1.25em}
+    .mini{font-size:13px;color:var(--muted)}
+    .cta{background:linear-gradient(135deg,#eef5ef,#f7f2e9);border-radius:22px;padding:22px;margin-top:20px}
+    footer{font-size:12px;color:#7b827c;text-align:center;margin-top:34px}
+    .restart{background:none;border:0;color:var(--green-dark);text-decoration:underline;cursor:pointer;padding:12px}
+    @media(max-width:520px){
+      .card{padding:18px 15px;border-radius:18px}
+      .question{font-size:18px}
+      .actions{flex-direction:column-reverse}
+      .actions .btn{width:100%}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">imaaru ｜ 骨盤底ケア</div>
+    <div class="badge">無料・約2分</div>
+    <h1>急な尿意、<br>あなたはどのタイプ？</h1>
+    <p class="lead">「急にトイレに行きたくなる」「念のため先に行ってしまう」。10問で、今の排尿習慣と骨盤底筋の使い方を整理してみましょう。</p>
+  </header>
+
+  <section id="intro" class="card">
+    <div class="note">
+      <strong>このチェックは診断ではありません。</strong><br>
+      過活動膀胱などの病名を判定するものではなく、セルフケアを考えるために「今どんな傾向があるか」を整理するためのものです。
+    </div>
+    <div class="medical" style="margin-top:12px">
+      <strong>先に医療機関へ相談したい症状：</strong><br>
+      血尿、排尿時の痛み・強い違和感、発熱、急に始まった強い頻尿や尿意、尿が出にくい・残尿感が強い、繰り返す尿路感染などがある場合は、セルフケアより医療機関への相談を優先してください。
+    </div>
+    <p class="mini">回答内容はこの端末のブラウザ内で判定し、送信・保存しません。</p>
+    <button class="btn btn-primary" id="startBtn">チェックをはじめる →</button>
+  </section>
+
+  <div id="quizArea" class="hidden">
+    <div class="progress-wrap">
+      <div class="progress"><div id="bar"></div></div>
+    </div>
+    <div id="questionCard" class="card"></div>
+  </div>
+
+  <section id="result" class="card hidden"></section>
+
+  <footer>
+    © imaaru<br>
+    本ページのセルフチェックは一般的な健康情報を目的としています。症状が続く・悪化する場合は医療機関へご相談ください。
+  </footer>
+</div>
+
+<script>
+// ===========================================
+// ★ここだけ変更してください★
+// LINE公式アカウントの友だち追加URLに差し替え
+const LINE_URL = "https://lin.ee/zl30ONi";
+// ===========================================
+
+const questions = [
+  {
+    text:"外出前や電車に乗る前など、尿意が強くなくても「念のため」トイレに行くことがありますか？",
+    options:[
+      ["ほとんどない",{}],
+      ["ときどきある",{A:1}],
+      ["よくある",{A:2}]
+    ]
+  },
+  {
+    text:"家に着いた時・玄関の鍵を開ける時・トイレが見えた時など、決まった場面で急に尿意が強くなることがありますか？",
+    options:[
+      ["ほとんどない",{}],
+      ["ときどきある",{A:1,B:1}],
+      ["よくある",{A:2,B:1}]
+    ]
+  },
+  {
+    text:"「漏れたら困る」と思って、早め早めに排尿することがありますか？",
+    options:[
+      ["ほとんどない",{}],
+      ["ときどきある",{A:1}],
+      ["よくある",{A:2}]
+    ]
+  },
+  {
+    text:"前触れが少なく、突然「今すぐトイレに行きたい」という強い尿意が来ることがありますか？",
+    options:[
+      ["ほとんどない",{}],
+      ["ときどきある",{B:1}],
+      ["よくある",{B:2}]
+    ]
+  },
+  {
+    text:"急な尿意が来た時、トイレまで我慢するのが難しいことがありますか？",
+    options:[
+      ["ほとんどない",{}],
+      ["ときどきある",{B:1}],
+      ["よくある",{B:2}]
+    ]
+  },
+  {
+    text:"急な尿意と一緒に、間に合わず少し漏れてしまうことがありますか？",
+    options:[
+      ["ない",{}],
+      ["ときどきある",{B:1}],
+      ["よくある",{B:2}]
+    ]
+  },
+  {
+    text:"急な尿意が来た時、慌てて立ち上がったりトイレへ急いだりすることが多いですか？",
+    options:[
+      ["ほとんどない",{}],
+      ["ときどきある",{B:1}],
+      ["よくある",{B:2}]
+    ]
+  },
+  {
+    text:"骨盤底筋を「尿やガスを我慢するように、内側へキュッと引き上げる」感覚が分かりますか？",
+    options:[
+      ["分かる",{}],
+      ["少し分かりにくい",{C:1}],
+      ["ほとんど分からない",{C:2}]
+    ]
+  },
+  {
+    text:"骨盤底筋を締めようとすると、息を止めたり、お腹やお尻に強く力が入ったりしますか？",
+    options:[
+      ["ほとんどない",{}],
+      ["ときどきある",{C:1}],
+      ["よくある",{C:2}]
+    ]
+  },
+  {
+    text:"急な尿意が来た時に、立ち止まって骨盤底筋を短く数回収縮させ、尿意の波が落ち着くのを待つ方法を使えそうですか？",
+    options:[
+      ["できそう",{}],
+      ["少し不安",{C:1}],
+      ["やり方が分からない",{C:2}]
+    ]
+  }
+];
+
+const redFlags = [
+  "血尿がある",
+  "排尿時に痛い・しみる、または発熱がある",
+  "ここ最近、急に強い頻尿・尿意が始まった",
+  "尿が出にくい／出し切れない感じが強い",
+  "膀胱炎・尿路感染を繰り返している",
+  "どれも当てはまらない"
+];
+
+let index = 0;
+let answers = [];
+let redAnswer = [];
+
+const intro = document.getElementById("intro");
+const quizArea = document.getElementById("quizArea");
+const card = document.getElementById("questionCard");
+const result = document.getElementById("result");
+const bar = document.getElementById("bar");
+
+document.getElementById("startBtn").addEventListener("click",()=>{
+  intro.classList.add("hidden");
+  quizArea.classList.remove("hidden");
+  index=0; answers=[]; redAnswer=[];
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+function render(){
+  const total = questions.length + 1;
+  bar.style.width = `${(index/total)*100}%`;
+
+  if(index < questions.length){
+    const q = questions[index];
+    card.innerHTML = `
+      <div class="qnum">QUESTION ${index+1} / ${questions.length}</div>
+      <div class="question">${q.text}</div>
+      <div class="options">
+        ${q.options.map((o,i)=>`
+          <label class="option">
+            <input type="radio" name="answer" value="${i}" ${answers[index]===i?"checked":""}>
+            <span>${o[0]}</span>
+          </label>`).join("")}
+      </div>
+      <div class="actions">
+        ${index>0?'<button class="btn btn-secondary" onclick="prev()">← 戻る</button>':'<span></span>'}
+        <button class="btn btn-primary" onclick="next()">次へ →</button>
+      </div>`;
+  } else {
+    card.innerHTML = `
+      <div class="qnum">FINAL CHECK</div>
+      <div class="question">次の症状で当てはまるものはありますか？</div>
+      <p class="mini">複数選択できます。「どれも当てはまらない」は他の項目と同時に選ばないでください。</p>
+      <div class="options">
+        ${redFlags.map((t,i)=>`
+          <label class="option">
+            <input type="checkbox" name="red" value="${i}" ${redAnswer.includes(i)?"checked":""}
+              onchange="handleRed(this)">
+            <span>${t}</span>
+          </label>`).join("")}
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="prev()">← 戻る</button>
+        <button class="btn btn-primary" onclick="finish()">結果を見る</button>
+      </div>`;
+  }
+}
+
+function next(){
+  const picked = document.querySelector('input[name="answer"]:checked');
+  if(!picked){ alert("いちばん近いものを1つ選んでください。"); return; }
+  answers[index]=Number(picked.value);
+  index++;
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function prev(){
+  if(index>0) index--;
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function handleRed(el){
+  const n=Number(el.value);
+  if(n===redFlags.length-1 && el.checked){
+    document.querySelectorAll('input[name="red"]').forEach(x=>{if(x!==el)x.checked=false});
+  } else if(el.checked){
+    const none=document.querySelector(`input[name="red"][value="${redFlags.length-1}"]`);
+    if(none) none.checked=false;
+  }
+  redAnswer=[...document.querySelectorAll('input[name="red"]:checked')].map(x=>Number(x.value));
+}
+function finish(){
+  redAnswer=[...document.querySelectorAll('input[name="red"]:checked')].map(x=>Number(x.value));
+  if(redAnswer.length===0){ alert("当てはまるものを選んでください。"); return; }
+
+  const hasRed = redAnswer.some(n=>n < redFlags.length-1);
+  const score={A:0,B:0,C:0};
+  questions.forEach((q,qi)=>{
+    const oi=answers[qi];
+    if(oi===undefined) return;
+    const pts=q.options[oi][1];
+    Object.keys(pts).forEach(k=>score[k]+=pts[k]);
+  });
+
+  // Highest score. Ties prioritize B → C → A because strong urgency merits clearer guidance.
+  const order=["B","C","A"];
+  let type=order[0];
+  order.forEach(k=>{
+    if(score[k]>score[type]) type=k;
+  });
+
+  showResult(hasRed ? "D" : type, score);
+}
+function showResult(type,score){
+  quizArea.classList.add("hidden");
+  result.classList.remove("hidden");
+  bar.style.width="100%";
+
+  const data={
+    A:{
+      tag:"Aタイプ｜習慣を見直す",
+      icon:"🕊️",
+      title:"先回り・習慣タイプの傾向",
+      intro:"「念のため行っておこう」「この場所に来るとトイレに行きたくなる」など、排尿の習慣や場面との結びつきが強い可能性があります。",
+      points:[
+        "尿意が弱くても先に排尿することが多い",
+        "外出・帰宅など、決まった場面とトイレが結びつきやすい",
+        "「漏れたら困る」という予防行動が増えていることがある"
+      ],
+      first:"尿意がそれほど強くないのに「出かけるから」「近くにトイレがあるから」と排尿している場面があれば、「尿意が来たらすぐトイレ」という習慣ではなく、<strong>本当に今行く必要があるか、一度確認する習慣</strong>をつくるところから始めましょう。<br><br>3日間だけ排尿を記録すると、<strong>「私は尿意で行っているのか、それとも習慣で行っているのか」</strong>が見えやすくなります。"',
+      benefit:"目指すのは、トイレの予定に生活を合わせるのではなく、<strong>自分の尿意を確認して行動を選べること</strong>です。"
+    },
+    B:{
+      tag:"Bタイプ｜尿意の波を落ち着かせる",
+      icon:"🌊",
+      title:"急な尿意が強いタイプの傾向",
+      intro:"突然強い尿意が来たり、我慢しづらかったりする傾向がみられます。こうした症状は過活動膀胱などでもみられますが、このチェックだけで診断はできません。",
+      points:[
+        "突然「今すぐ行きたい」という尿意が来る",
+        "急ぐほど尿意が強く感じられることがある",
+        "場合によっては切迫性尿失禁を伴うことがある"
+      ],
+      first:"急な尿意が来ても、すぐトイレへ走らない。<br><br>① いったん立ち止まる<br>② 骨盤底筋を短く数回「キュッ、キュッ」<br>③ 呼吸を止めず、尿意の波が弱まるのを待つ<br>④ 落ち着いてからトイレへ<br><br>目標は「ひたすら我慢する」ことではありません。",
+      benefit:"目指すのは、<strong>急な尿意が来ても慌てず、自分で対処できる感覚をつくること</strong>です。"
+    },
+    C:{
+      tag:"Cタイプ｜使い方を確かめる",
+      icon:"🌿",
+      title:"骨盤底筋の使い方確認タイプ",
+      intro:"尿意への対策をする前に、骨盤底筋を正しく収縮できているかを確認した方がよさそうです。強く鍛えることより、まず「どこを・どう使うか」が大切です。",
+      points:[
+        "骨盤底筋を締める感覚が分かりにくい",
+        "お腹・お尻に力が入りやすい",
+        "尿意が来た瞬間に使う方法が分からない"
+      ],
+      first:"息を止めずに、「尿やガスを我慢するように、出口を閉じて内側へ引き上げる」感覚を確認します。<br><br>どこを締めているのか分からない場合は、回数を増やすより<strong>正しい使い方を覚えることが先</strong>。<br><br>骨盤底筋を必要な場面で使えるようになることが目標です。",
+      benefit:"目指すのは、ただ回数をこなすことではなく、<strong>必要な時に骨盤底筋を使えること</strong>です。"
+    },
+    D:{
+      tag:"D｜まず原因を確認",
+      icon:"🏥",
+      title:"セルフケアより、まず医療機関への相談を",
+      intro:"今回の回答には、セルフケアだけで判断しない方がよい症状が含まれていました。泌尿器科・婦人科などで原因を確認してから進める方が安心です。",
+      points:[
+        "尿路感染、結石、炎症などでも似た症状が出ることがあります",
+        "急な症状変化は「骨盤底筋が弱いから」と決めつけないことが大切です",
+        "受診後、セルフケアが適していると分かればそこから始められます"
+      ],
+      first:"まず原因を確認することが、いちばんの近道です。血尿、排尿時痛、急に始まった強い頻尿などは、骨盤底筋だけでは説明できないことがあります。自己流で我慢したりトレーニングしたりする前に、泌尿器科・婦人科などで相談してください。",
+      benefit:"<strong>「セルフケアしてよい状態か」を確認してから始める</strong>ことで、安心して取り組めます。"
+    }
+  };
+
+  const d=data[type];
+  const lineBlock = type==="D" ? `
+    <div class="note" style="margin-top:18px">
+      医療機関でセルフケアを行ってよいと確認できた後は、骨盤底筋の使い方や排尿習慣の見直しにも取り組めます。
+    </div>` : `
+    <div class="cta">
+      <strong>ここから1週間、骨盤底ケアを試してみませんか？</strong>
+      <p>LINEでは、骨盤底筋の使い方・呼吸・セルフチェックを、無理なく続けられる形でお届けしています。</p>
+      <a class="btn btn-line" href="${LINE_URL}" target="_blank" rel="noopener">LINEで無料1週間を受け取る</a>
+      <p class="mini" style="margin-bottom:0">※ LINE登録後、既存の無料1週間セルフケアへご案内する想定です。</p>
+    </div>`;
+
+  result.innerHTML=`
+    <div class="type-head type-${type.toLowerCase()}">
+      <div class="icon">${d.icon}</div>
+      <div class="eyebrow">${d.tag}</div>
+      <div class="result-title">${d.title}</div>
+      <p style="margin-bottom:0">${d.intro}</p>
+    </div>
+    <div class="result-box">
+      <h3>あなたに見られた傾向</h3>
+      <ul>${d.points.map(x=>`<li>${x}</li>`).join("")}</ul>
+    </div>
+    <div class="action-box action-${type.toLowerCase()}">
+      <h3>あなたに合った対策</h3>
+      <p>${d.first}</p>
+      <p style="margin-bottom:0">${d.benefit}</p>
+    </div>
+    <p class="mini">※ この結果は診断ではありません。症状が続く、悪化する、生活への支障が大きい場合は医療機関への相談をご検討ください。</p>
+    ${lineBlock}
+    <button class="restart" onclick="restart()">もう一度チェックする</button>
+  `;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function restart(){
+  result.classList.add("hidden");
+  intro.classList.remove("hidden");
+  answers=[];redAnswer=[];index=0;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>
